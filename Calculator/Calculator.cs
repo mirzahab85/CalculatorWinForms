@@ -8,6 +8,7 @@ namespace Calculator
         private string option;
         private decimal result;
 
+
         public Calculator()
         {
             InitializeComponent();
@@ -205,8 +206,6 @@ namespace Calculator
             }
         }
 
-        
-
         private void clear_Click(object sender, EventArgs e)
         {
             textTotal.Clear();
@@ -249,6 +248,13 @@ namespace Calculator
                 default:
                     throw new InvalidOperationException("Invalid operator.");
             }
+        }
+
+        private void Btn_percent(object sender, EventArgs e)
+        {
+            num2 = decimal.Parse(textTotal.Text);
+            result = num1 * (num2 / 100);
+            textTotal.Text = result.ToString();
         }
     }
 }

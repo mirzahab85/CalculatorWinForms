@@ -47,7 +47,7 @@
             this.btn0 = new System.Windows.Forms.Button();
             this.equals = new System.Windows.Forms.Button();
             this.add = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
+            this.percent = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
@@ -239,6 +239,7 @@
             this.btn_Decimal.Text = ".";
             this.btn_Decimal.UseVisualStyleBackColor = true;
             this.btn_Decimal.Click += new System.EventHandler(this.decimal_Click);
+            this.btn_Decimal.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Calculator_KeyDown);
             // 
             // btn0
             // 
@@ -276,15 +277,16 @@
             this.add.Click += new System.EventHandler(this.Btn_addition);
             this.add.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Calculator_KeyDown);
             // 
-            // button2
+            // percent
             // 
-            this.button2.Font = new System.Drawing.Font("Segoe UI", 22.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.button2.Location = new System.Drawing.Point(31, 123);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(103, 76);
-            this.button2.TabIndex = 1;
-            this.button2.Text = "%";
-            this.button2.UseVisualStyleBackColor = true;
+            this.percent.Font = new System.Drawing.Font("Segoe UI", 22.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.percent.Location = new System.Drawing.Point(31, 123);
+            this.percent.Name = "percent";
+            this.percent.Size = new System.Drawing.Size(103, 76);
+            this.percent.TabIndex = 1;
+            this.percent.Text = "%";
+            this.percent.UseVisualStyleBackColor = true;
+            this.percent.Click += new System.EventHandler(this.Btn_percent);
             // 
             // button1
             // 
@@ -308,7 +310,7 @@
             this.Controls.Add(this.add);
             this.Controls.Add(this.subtraction);
             this.Controls.Add(this.multiply);
-            this.Controls.Add(this.button2);
+            this.Controls.Add(this.percent);
             this.Controls.Add(this.divide);
             this.Controls.Add(this.btn0);
             this.Controls.Add(this.btn_Decimal);
@@ -352,7 +354,7 @@
         private Button btn0;
         private Button equals;
         private Button add;
-        private Button button2;
+        private Button percent;
         private Button button1;
     }
 }
