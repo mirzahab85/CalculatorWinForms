@@ -164,13 +164,23 @@ namespace Calculator
             if (e.KeyCode == Keys.Escape)
             {
                 textTotal.Text = "0";
+                option = "";
+                num1 = 0;
+                num2 = 0;
             }
         }
 
         private void TextTotal_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Enter)
+            // Check if the key that was pressed is a number key
+            if (e.KeyCode >= Keys.D0 && e.KeyCode <= Keys.D9)
             {
+                // Add the character corresponding to the key that was pressed to the text in the textTotal text box
+                textTotal.Text += (char)e.KeyCode;
+            }
+            else if (e.KeyCode == Keys.Enter)
+            {
+                // Calculate the expression and update the text in the textTotal text box
                 string input = textTotal.Text.Trim();
 
                 if (!IsValidInputFormat(input))
@@ -203,6 +213,11 @@ namespace Calculator
                 decimal result = PerformOperation(num1, num2, operatorSymbol);
 
                 textTotal.Text = result.ToString();
+            }
+            else if (e.KeyCode == Keys.Escape)
+            {
+                // Reset the textTotal text box to 0
+                textTotal.Text = "0";
             }
         }
 
