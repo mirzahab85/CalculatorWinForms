@@ -63,6 +63,7 @@
             this.textTotal.Text = "0";
             this.textTotal.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.textTotal.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TextTotal_KeyDown);
+            this.textTotal.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textTotal_KeyPress);
             // 
             // btn7
             // 
@@ -287,6 +288,7 @@
             this.percent.Text = "%";
             this.percent.UseVisualStyleBackColor = true;
             this.percent.Click += new System.EventHandler(this.Btn_percent);
+            this.percent.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Calculator_KeyDown);
             // 
             // button1
             // 

@@ -146,6 +146,9 @@ namespace Calculator
                 case "÷":
                     result = num1 / num2;
                     break;
+                case "%":
+                    result = num1 * (num2 / 100);
+                    break;
                 default:
                     break;
             }
@@ -172,52 +175,93 @@ namespace Calculator
 
         private void TextTotal_KeyDown(object sender, KeyEventArgs e)
         {
-            // Check if the key that was pressed is a number key
-            if (e.KeyCode >= Keys.D0 && e.KeyCode <= Keys.D9)
+            // Check if the key that was pressed is a number key (0 to 9) or NumPad key
+            if ((e.KeyCode >= Keys.D0 && e.KeyCode <= Keys.D9))
             {
                 // Add the character corresponding to the key that was pressed to the text in the textTotal text box
-                textTotal.Text += (char)e.KeyCode;
+                // But only if the current text box content is "0"
+                if (textTotal.Text == "0" || option != "")
+                {
+                    textTotal.Text = ((char)e.KeyCode).ToString();
+                }
+
+                // Prevent the key event from being processed by other controls
+                e.Handled = true;
             }
+            else if (e.KeyCode == Keys.Add)
+            {
+                option = e.KeyCode.ToString();
+                textTotal.Clear(); // Clear the textTotal field when the "+" key is pressed
+                e.Handled = true;
+            }
+            else if (e.KeyCode == Keys.Multiply || e.KeyCode == Keys.Subtract || e.KeyCode == Keys.Divide || e.KeyCode == Keys.Oem5)
+            {
+                option = e.KeyCode.ToString();
+                e.Handled = true;
+            }
+
             else if (e.KeyCode == Keys.Enter)
             {
                 // Calculate the expression and update the text in the textTotal text box
                 string input = textTotal.Text.Trim();
+                int operatorIndex = input.LastIndexOfAny(new char[] { '+', '-', '*', '/', '%' });
+                string operatorSymbol = input[operatorIndex].ToString();
+                result = PerformOperation(num1, num2, operatorSymbol);
+                textTotal.Text = result.ToString();
 
-                if (!IsValidInputFormat(input))
-                {
-                    //MessageBox.Show("Invalid input format. Enter a valid expression with two numbers and an operator (+, -, *, /).");
-                    return;
-                }
+                //if (!IsValidInputFormat(input))
+                //{
+                //    //MessageBox.Show("Invalid input format. Enter a valid expression with two numbers and an operator (+, -, *, /, %).");
+                //    return;
+                //}
 
-                // Find the index of the operator within the input string
-                int operatorIndex = input.IndexOfAny(new char[] { '+', '-', '*', '/' });
+                // Find the last index of the operator within the input string
+                //int operatorIndex = input.LastIndexOfAny(new char[] { '+', '-', '*', '/', '%' });
 
                 // Ensure the operator exists and is not the first or last character
-                if (operatorIndex < 1 || operatorIndex >= input.Length - 1)
-                {
-                    //MessageBox.Show("Invalid input format. Enter a valid expression with two numbers and an operator (+, -, *, /).");
-                    return;
-                }
+                //if (operatorIndex < 1 || operatorIndex >= input.Length - 1)
+                //{
+                //    MessageBox.Show("Invalid input format. Enter a valid expression with two numbers and an operator (+, -, *, /, %).");
+                //    return;
+                //}
 
                 // Extract the numbers and operator from the input
-                string num1String = input.Substring(0, operatorIndex).Trim();
-                string num2String = input.Substring(operatorIndex + 1).Trim();
-                string operatorSymbol = input[operatorIndex].ToString();
+                //string num1String = input.Substring(0, operatorIndex).Trim();
+                //string num2String = input.Substring(operatorIndex + 1).Trim();
+                //string operatorSymbol = input[operatorIndex].ToString();
 
-                if (!decimal.TryParse(num1String, out decimal num1) || !decimal.TryParse(num2String, out decimal num2))
-                {
-                    MessageBox.Show("Invalid input format. Enter valid decimal numbers.");
-                    return;
-                }
+                //if (!decimal.TryParse(num1String, out decimal num1) || !decimal.TryParse(num2String.Trim(), out decimal num2))
+                //{
+                //    MessageBox.Show("Invalid input format. Enter valid decimal numbers.");
+                //    return;
+                //}
 
-                decimal result = PerformOperation(num1, num2, operatorSymbol);
-
-                textTotal.Text = result.ToString();
+                //if (operatorSymbol == "%")
+                //{
+                //    // Handle the percentage calculation
+                //    //num2 = num1 * (num2 / 100);
+                //    //textTotal.Text = num2.ToString();
+                //    num2 = decimal.Parse(textTotal.Text);
+                //    result = num1 * (num2 / 100);
+                //    textTotal.Text = result.ToString();
+                //}
+                //else
+                //{
+                //    result = PerformOperation(num1, num2, operatorSymbol);
+                //    textTotal.Text = result.ToString();
+                //}
             }
             else if (e.KeyCode == Keys.Escape)
             {
                 // Reset the textTotal text box to 0
                 textTotal.Text = "0";
+            }
+            else if (e.KeyCode == Keys.Oem5) // The percent sign '%'
+            {
+                // Handle the percent key
+                // If the key that was pressed is the percentage sign (%), then update the textTotal text box with the percentage calculation
+                num2 = num1 * (decimal.Parse(textTotal.Text.Trim()) / 100);
+                textTotal.Text = num2.ToString();
             }
         }
 
@@ -239,16 +283,39 @@ namespace Calculator
         }
 
         //private void TextDisplay_KeyDown(object sender, KeyEventArgs e)
-        
+
 
         private bool IsValidInputFormat(string input)
-        { 
-            return input.Split(new[] { '+', '-', '*', '/' }, StringSplitOptions.RemoveEmptyEntries).Length == 2;
+        {
+            // Check if the input string contains a valid operator
+            char oper = input.FirstOrDefault(c => c == '+' || c == '-' || c == '*' || c == '/' || c == '%');
+            if (oper == '\0')
+            {
+                return false;
+            }
+
+            // Split the input string on the operator
+            string[] parts = input.Split(oper);
+
+            // Check if there are two parts in the input string
+            if (parts.Length != 2)
+            {
+                return false;
+            }
+
+            // Check if the two parts are valid decimal numbers
+            if (!decimal.TryParse(parts[0], out decimal num1) || !decimal.TryParse(parts[1], out decimal num2))
+            {
+                return false;
+            }
+
+            return true;
         }
+
 
         private decimal PerformOperation(decimal num1, decimal num2, string input)
         {
-            char oper = input.FirstOrDefault(c => c == '+' || c == '-' || c == '*' || c == '/');
+            char oper = input.FirstOrDefault(c => c == '+' || c == '-' || c == '*' || c == '/' || c == '%');
 
             switch (oper)
             {
@@ -270,6 +337,11 @@ namespace Calculator
             num2 = decimal.Parse(textTotal.Text);
             result = num1 * (num2 / 100);
             textTotal.Text = result.ToString();
+        }
+
+        private void textTotal_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            var keychar = e.KeyChar;
         }
     }
 }
