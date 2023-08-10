@@ -188,18 +188,13 @@ namespace Calculator
                 // Prevent the key event from being processed by other controls
                 e.Handled = true;
             }
-            else if (e.KeyCode == Keys.Add)
-            {
-                
+            else if (e.KeyCode == Keys.Add || e.KeyCode == Keys.Multiply || e.KeyCode == Keys.Subtract || e.KeyCode == Keys.Divide || e.KeyCode == Keys.Oem5)
+            {       
                 textTotal.Clear(); // Clear the textTotal field when the "+" key is pressed
                 textTotal.Text = "";
                 e.SuppressKeyPress = true;
             }
-            else if (e.KeyCode == Keys.Multiply || e.KeyCode == Keys.Subtract || e.KeyCode == Keys.Divide || e.KeyCode == Keys.Oem5)
-            {
-                option = e.KeyCode.ToString();
-                e.Handled = true;
-            }
+            
 
             else if (e.KeyCode == Keys.Enter)
             {
@@ -255,9 +250,8 @@ namespace Calculator
             else if (e.KeyCode == Keys.Escape)
             {
                 // Reset the textTotal text box to 0
-                textTotal.Clear();
-                option = "";
-                e.Handled = true;
+                textTotal.Text = "0";
+                e.Handled|= true;
             }
             else if (e.KeyCode == Keys.Oem5) // The percent sign '%'
             {
